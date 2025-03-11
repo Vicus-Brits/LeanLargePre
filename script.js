@@ -109,7 +109,7 @@ function renderGanttChart() {
 function renderPhaseLegend() {
   const phaseLegendContainer = document.getElementById("phaseLegend");
   const legendStart = document.createElement("div");
-  legendStart.textContent = "PROJECT PHASE |  ";
+  legendStart.textContent = "PROJECT PHASE---";
   phaseLegendContainer.appendChild(legendStart);
   phaseLegend.forEach((phase) => {
     const legendItem = document.createElement("div");
@@ -126,13 +126,41 @@ function renderPhaseLegend() {
     legendItem.appendChild(label);
     phaseLegendContainer.appendChild(legendItem);
   });
-  const legendEnd = document.createElement("div");
-  legendEnd.textContent = "| ";
-  phaseLegendContainer.appendChild(legendEnd);
+  //   const legendEnd = document.createElement("div");
+  //   legendEnd.textContent = "| ";
+  //   phaseLegendContainer.appendChild(legendEnd);
+}
+function renderLaneStatusLegend() {
+  const laneStatusLegendContainer = document.getElementById("laneStatusLegend");
+  const laneStatuslegendStart = document.createElement("div");
+  laneStatuslegendStart.textContent = "LANE STATUS---";
+  laneStatusLegendContainer.appendChild(laneStatuslegendStart);
+
+  lanePhaseLegend.forEach((lanePhase) => {
+    const legendItem = document.createElement("div");
+    legendItem.classList.add("phase-legend-item");
+
+    const colorBox = document.createElement("div");
+    colorBox.classList.add("phase-legend-color");
+    colorBox.style.backgroundColor = lanePhase.color;
+
+    const label = document.createElement("span");
+    label.textContent = lanePhase.lanePhase;
+
+    legendItem.appendChild(colorBox);
+    legendItem.appendChild(label);
+    laneStatusLegendContainer.appendChild(legendItem);
+  });
+  //   const lanePhaseLegendEnd = document.createElement("div");
+  //   lanePhaseLegendEnd.textContent = "| ";
+  //   laneStatusLegendContainer.appendChild(lanePhaseLegendEnd);
 }
 
+// Main
 renderGanttChart();
 renderPhaseLegend();
+renderLaneStatusLegend();
 
+// Log
 console.log(data);
 console.log(phaseLegend);

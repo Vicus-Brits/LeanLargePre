@@ -58,10 +58,10 @@ const data = [
     seqid: 7,
     Project: "P3",
     Squad: "ABC",
-    Phase: "pre-execution",
+    Phase: "backlog",
     LanePhase: "unknown",
-    StartWeek: 25,
-    EndWeek: 33,
+    StartWeek: 17,
+    EndWeek: 36,
   },
 
   {
@@ -77,15 +77,15 @@ const data = [
 
 const phaseLegend = [
   { phase: "backlog", color: "#b0bec5" },
-  { phase: "pre-execution", color: "#a5d6a7" },
+  { phase: "pre-execution", color: "#b0b025" },
   { phase: "execution", color: "#66bb6a" },
   { phase: "system-integration", color: "#388e3c" },
-  { phase: "go-live", color: "#1b5e20" },
+  { phase: "go-live", color: "#113913" },
 ];
 
 const lanePhaseLegend = [
-  { lanePhase: "unknown", color: rgba(252, 252, 252) },
-  { lanePhase: "conflict", color: rgba(255, 241, 243) },
-  { lanePhase: "committed", color: rgba(230, 255, 230) },
-  { lanePhase: "planned", color: rgba(250, 249, 240) },
+  { lanePhase: "unknown", color: "rgb(176, 190, 197, 0.3)" },
+  { lanePhase: "conflict", color: "rgba(255, 241, 243)" },
+  { lanePhase: "committed", color: "rgba(230, 255, 230)" },
+  { lanePhase: "planned", color: "rgba(250, 249, 240)" },
 ];
