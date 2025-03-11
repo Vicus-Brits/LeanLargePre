@@ -1,46 +1,3 @@
-const data = [
-  {
-    seqid: 1,
-    Project: "P1",
-    Squad: "S1",
-    Phase: "Idea",
-    StartWeek: 15,
-    EndWeek: 20,
-  },
-  {
-    seqid: 2,
-    Project: "P1",
-    Squad: "S1",
-    Phase: "Build",
-    StartWeek: 17,
-    EndWeek: 34,
-  },
-  {
-    seqid: 3,
-    Project: "P1",
-    Squad: "S1",
-    Phase: "Test",
-    StartWeek: 12,
-    EndWeek: 18,
-  },
-  {
-    seqid: 4,
-    Project: "P2",
-    Squad: "S1",
-    Phase: "Idea",
-    StartWeek: 25,
-    EndWeek: 36,
-  },
-  {
-    seqid: 5,
-    Project: "P2",
-    Squad: "S1",
-    Phase: "Unknown",
-    StartWeek: 25,
-    EndWeek: 33,
-  },
-];
-
 // Helper Functions
 function getMinWeek(data) {
   let minWeek = data[0].StartWeek;
@@ -79,7 +36,7 @@ function createTimeScale(data) {
   return { minWeek, maxWeek, totalWeeks };
 }
 function getItemKey(item) {
-  return item.Project + "_" + item.Squad + "_" + item.Phase;
+  return item.Project + " - " + item.Squad;
 }
 function createLegend(minWeek, maxWeek, totalWeeks) {
   // Create legend row
@@ -127,9 +84,11 @@ function renderGanttChart() {
 
     const barContainer = document.createElement("div");
     barContainer.classList.add("gantt-bar-container");
+    barContainer.classList.add("lane-phase-" + item.LanePhase);
 
     const bar = document.createElement("div");
     bar.classList.add("gantt-bar");
+    bar.classList.add("phase-" + item.Phase);
 
     // Calculate position and width of the bar
     const startOffset = ((item.StartWeek - minWeek) / totalWeeks) * 100;
@@ -147,7 +106,33 @@ function renderGanttChart() {
     ganttChart.appendChild(row); // row in ganttChart
   });
 }
+function renderPhaseLegend() {
+  const phaseLegendContainer = document.getElementById("phaseLegend");
+  const legendStart = document.createElement("div");
+  legendStart.textContent = "PROJECT PHASE |  ";
+  phaseLegendContainer.appendChild(legendStart);
+  phaseLegend.forEach((phase) => {
+    const legendItem = document.createElement("div");
+    legendItem.classList.add("phase-legend-item");
+
+    const colorBox = document.createElement("div");
+    colorBox.classList.add("phase-legend-color");
+    colorBox.style.backgroundColor = phase.color;
+
+    const label = document.createElement("span");
+    label.textContent = phase.phase;
+
+    legendItem.appendChild(colorBox);
+    legendItem.appendChild(label);
+    phaseLegendContainer.appendChild(legendItem);
+  });
+  const legendEnd = document.createElement("div");
+  legendEnd.textContent = "| ";
+  phaseLegendContainer.appendChild(legendEnd);
+}
 
 renderGanttChart();
+renderPhaseLegend();
 
 console.log(data);
+console.log(phaseLegend);

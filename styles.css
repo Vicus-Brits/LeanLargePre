@@ -43,7 +43,7 @@ body {
   flex-grow: 1;
   position: relative;
   height: 30px;
-  background: #f0f0f0;
+  /* background: #f0f0f0; */
   display: flex;
   align-items: center;
 }
@@ -65,4 +65,54 @@ body {
   text-align: center;
   line-height: 30px;
   border-radius: 5px;
+}
+
+/* Phase colors */
+.phase-backlog {
+  background-color: #b0bec5;
+}
+.phase-pre-execution {
+  background-color: #a5d6a7;
+}
+.phase-execution {
+  background-color: #66bb6a;
+}
+.phase-system-integration {
+  background-color: #388e3c;
+}
+.phase-go-live {
+  background-color: #1b5e20;
+}
+
+.phase-legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.phase-legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.phase-legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+/* Gantt Bar Colors */
+.lane-phase-unknown {
+  background-color: rgba(252, 252, 252, 1);
+}
+.lane-phase-conflict {
+  background-color: rgba(255, 241, 243, 0.7);
+}
+.lane-phase-committed {
+  background-color: rgba(230, 255, 230, 0.7);
+}
+.lane-phase-planned {
+  background-color: rgba(250, 249, 240, 0.7);
 }
