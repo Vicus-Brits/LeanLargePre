@@ -28,10 +28,9 @@ body {
 }
 
 .gantt-label {
-  width: 100px;
+  width: 200px;
   text-align: right;
   margin-right: 10px;
-  font-weight: bold;
 }
 
 /*
@@ -114,6 +113,6 @@ body {
 .lane-phase-committed {
   background-color: rgba(230, 255, 230, 0.7);
 }
-.lane-phase-planned {
+.lane-phase-planning {
   background-color: rgba(250, 249, 240);
 }

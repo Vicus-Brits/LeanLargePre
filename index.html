@@ -9,6 +9,17 @@
   <body>
     <h2>Gantt Chart</h2>
     <div class="gantt-container">
+      <div class="gantt-dropdown">
+        <label for="squadSelect">Squad:</label>
+        <select id="squadSelect" onchange="dropdownchange(this.id, this.value)"></select>
+        </select>
+
+        <label for="projectSelect">Project:</label>
+        <select id="projectSelect"  onchange="dropdownchange(this.id, this.value)">
+        </select>
+      </div>
+    </div>
+    <div class="gantt-container">
       <div class="gantt-legend" id="ganttLegend"></div>
       <div id="ganttChart"></div>
     </div>
@@ -22,7 +33,8 @@
     <section id="TODO">
       <h4>TODO</h4>
       <ul>
-        <li>Legend = Project + Squad</li>
+        <li>Dropdown Squad</li>
+        <li>Dropdown Project</li>
       </ul>
     </section>
     <script src="data.js"></script>

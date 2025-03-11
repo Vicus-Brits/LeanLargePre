@@ -1,4 +1,66 @@
+let data = [];
 // Helper Functions
+function populateGanttDropdowns() {
+  const squads = [...new Set(sourcedata.map((item) => item.Squad))];
+  console.log("Squads: " + squads);
+  const squadSelect = document.getElementById("squadSelect");
+  const allOption = document.createElement("option");
+  allOption.value = "All";
+  allOption.textContent = "All";
+  squadSelect.appendChild(allOption);
+  squads.forEach((squad) => {
+    const option = document.createElement("option");
+    option.value = squad;
+    option.textContent = squad;
+    squadSelect.appendChild(option);
+  });
+
+  const projects = [...new Set(sourcedata.map((item) => item.Project))];
+  console.log("Projects: " + projects);
+  const projectSelect = document.getElementById("projectSelect");
+  const allProjectOption = document.createElement("option");
+  allProjectOption.value = "All";
+  allProjectOption.textContent = "All";
+  projectSelect.appendChild(allProjectOption);
+  projects.forEach((project) => {
+    const option = document.createElement("option");
+    option.value = project;
+    option.textContent = project;
+    projectSelect.appendChild(option);
+  });
+}
+function setGanttdropdowns() {
+  if (localStorage.getItem("squadSelect") === null) {
+    localStorage.setItem("squadSelect", "All");
+  }
+  if (localStorage.getItem("projectSelect") === null) {
+    localStorage.setItem("projectSelect", "All");
+  }
+  const squadSelect = document.getElementById("squadSelect");
+  const projectSelect = document.getElementById("projectSelect");
+  const squad = localStorage.getItem("squadSelect");
+  const project = localStorage.getItem("projectSelect");
+  squadSelect.value = squad;
+  projectSelect.value = project;
+}
+function filterData() {
+  data = sourcedata;
+  let squad = localStorage.getItem("squadSelect");
+  let project = localStorage.getItem("projectSelect");
+  if (squad !== "All") {
+    data = data.filter((item) => item.Squad === squad);
+  }
+  if (project !== "All") {
+    data = data.filter((item) => item.Project === project);
+  }
+  return data;
+}
+function dropdownchange(id, value) {
+  localStorage.setItem(id, value);
+  console.log(value, id);
+
+  renderGanttChart();
+}
 function getMinWeek(data) {
   let minWeek = data[0].StartWeek;
   for (let i = 1; i < data.length; i++) {
@@ -64,7 +126,12 @@ function createLegend(minWeek, maxWeek, totalWeeks) {
     legendbarContainer.appendChild(weekElement);
   }
 }
+function filterSourceData(sourcedata) {
+  data = sourcedata;
+  return data;
+}
 function renderGanttChart() {
+  data = filterData();
   const ganttChart = document.getElementById("ganttChart");
   ganttChart.innerHTML = ""; // Clear previous content
   // Create timescale
@@ -80,7 +147,7 @@ function renderGanttChart() {
 
     const label = document.createElement("div");
     label.classList.add("gantt-label");
-    label.textContent = item.Project;
+    label.textContent = item.Project + " - " + item.Squad;
 
     const barContainer = document.createElement("div");
     barContainer.classList.add("gantt-bar-container");
@@ -126,9 +193,6 @@ function renderPhaseLegend() {
     legendItem.appendChild(label);
     phaseLegendContainer.appendChild(legendItem);
   });
-  //   const legendEnd = document.createElement("div");
-  //   legendEnd.textContent = "| ";
-  //   phaseLegendContainer.appendChild(legendEnd);
 }
 function renderLaneStatusLegend() {
   const laneStatusLegendContainer = document.getElementById("laneStatusLegend");
@@ -151,16 +215,18 @@ function renderLaneStatusLegend() {
     legendItem.appendChild(label);
     laneStatusLegendContainer.appendChild(legendItem);
   });
-  //   const lanePhaseLegendEnd = document.createElement("div");
-  //   lanePhaseLegendEnd.textContent = "| ";
-  //   laneStatusLegendContainer.appendChild(lanePhaseLegendEnd);
 }
 
-// Main
-renderGanttChart();
-renderPhaseLegend();
-renderLaneStatusLegend();
+document.addEventListener("DOMContentLoaded", () => {
+  filterData();
+  renderGanttChart();
+  populateGanttDropdowns();
+  setGanttdropdowns();
 
-// Log
-console.log(data);
-console.log(phaseLegend);
+  renderPhaseLegend();
+  renderLaneStatusLegend();
+
+  // Log
+  console.log(data);
+  console.log(phaseLegend);
+});

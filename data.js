@@ -1,4 +1,4 @@
-const data = [
+const sourcedata = [
   {
     seqid: 1,
     Project: "Project 1",
@@ -69,7 +69,7 @@ const data = [
     Project: "P4",
     Squad: "ABC",
     Phase: "pre-execution",
-    LanePhase: "planned",
+    LanePhase: "planning",
     StartWeek: 19,
     EndWeek: 35,
   },
@@ -87,5 +87,5 @@ const lanePhaseLegend = [
   { lanePhase: "unknown", color: "rgb(176, 190, 197, 0.3)" },
   { lanePhase: "conflict", color: "rgba(255, 241, 243)" },
   { lanePhase: "committed", color: "rgba(230, 255, 230)" },
-  { lanePhase: "planned", color: "rgba(250, 249, 240)" },
+  { lanePhase: "planning", color: "rgba(250, 249, 240)" },
 ];
