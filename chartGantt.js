@@ -1,35 +1,9 @@
-let data = [];
-// Helper Functions
-function populateGanttDropdowns() {
-  const squads = [...new Set(sourcedata.map((item) => item.Squad))];
-  console.log("Squads: " + squads);
-  const squadSelect = document.getElementById("squadSelect");
-  const allOption = document.createElement("option");
-  allOption.value = "All";
-  allOption.textContent = "All";
-  squadSelect.appendChild(allOption);
-  squads.forEach((squad) => {
-    const option = document.createElement("option");
-    option.value = squad;
-    option.textContent = squad;
-    squadSelect.appendChild(option);
-  });
+//SELECTED DATA
+let dataGanttChart = dataGantt;
 
-  const projects = [...new Set(sourcedata.map((item) => item.Project))];
-  console.log("Projects: " + projects);
-  const projectSelect = document.getElementById("projectSelect");
-  const allProjectOption = document.createElement("option");
-  allProjectOption.value = "All";
-  allProjectOption.textContent = "All";
-  projectSelect.appendChild(allProjectOption);
-  projects.forEach((project) => {
-    const option = document.createElement("option");
-    option.value = project;
-    option.textContent = project;
-    projectSelect.appendChild(option);
-  });
-}
-function setGanttdropdowns() {
+// MANAGE DROPDOWNS
+function setGanttDefaults() {
+  // run onload to set localStorage value
   if (localStorage.getItem("squadSelect") === null) {
     localStorage.setItem("squadSelect", "All");
   }
@@ -43,38 +17,116 @@ function setGanttdropdowns() {
   squadSelect.value = squad;
   projectSelect.value = project;
 }
-function filterData() {
-  data = sourcedata;
-  let squad = localStorage.getItem("squadSelect");
-  let project = localStorage.getItem("projectSelect");
-  if (squad !== "All") {
-    data = data.filter((item) => item.Squad === squad);
+function setGanttLatestDropdownSelect() {
+  // set dropdown to the localStorage value
+  if (localStorage.getItem("squadSelect") === null) {
+    localStorage.setItem("squadSelect", "All");
   }
-  if (project !== "All") {
-    data = data.filter((item) => item.Project === project);
+  if (localStorage.getItem("projectSelect") === null) {
+    localStorage.setItem("projectSelect", "All");
   }
-  return data;
+  const squadSelect = document.getElementById("squadSelect");
+  const projectSelect = document.getElementById("projectSelect");
+  const squad = localStorage.getItem("squadSelect");
+  const project = localStorage.getItem("projectSelect");
+  squadSelect.value = squad;
+  projectSelect.value = project;
 }
-function dropdownchange(id, value) {
+function populateGanttDropdowns(dataGantt) {
+  const squads = [...new Set(dataGantt.map((item) => item.Squad))];
+  console.log("Squads: " + squads);
+  const squadSelect = document.getElementById("squadSelect");
+  const allOption = document.createElement("option");
+  allOption.value = "All";
+  allOption.textContent = "All";
+  squadSelect.appendChild(allOption);
+  squads.forEach((squad) => {
+    const option = document.createElement("option");
+    option.value = squad;
+    option.textContent = squad;
+    squadSelect.appendChild(option);
+  });
+
+  const projects = [...new Set(dataGantt.map((item) => item.Project))];
+  console.log("Projects: " + projects);
+  const projectSelect = document.getElementById("projectSelect");
+  const allProjectOption = document.createElement("option");
+  allProjectOption.value = "All";
+  allProjectOption.textContent = "All";
+  projectSelect.appendChild(allProjectOption);
+  projects.forEach((project) => {
+    const option = document.createElement("option");
+    option.value = project;
+    option.textContent = project;
+    projectSelect.appendChild(option);
+  });
+}
+function changeGanttDropdowns(id, value) {
   localStorage.setItem(id, value);
   console.log(value, id);
 
   renderGanttChart();
 }
-function getMinWeek(data) {
-  let minWeek = data[0].StartWeek;
-  for (let i = 1; i < data.length; i++) {
-    if (data[i].StartWeek < minWeek) {
-      minWeek = data[i].StartWeek;
+// MANAGE GANTT DATA
+function renderGanttChart() {
+  dataGanttChart = filterGanttData(dataGantt);
+  const ganttChart = document.getElementById("ganttChart");
+  ganttChart.innerHTML = ""; // Clear previous content
+  // Create timescale
+  const { minWeek, maxWeek, totalWeeks } = createTimeScale(dataGanttChart);
+  // Call createLegend function
+  createLegend(minWeek, maxWeek, totalWeeks);
+
+  // Iterate over each item in the data to create rows
+  dataGanttChart.forEach((item) => {
+    const row = document.createElement("div");
+    row.id = getItemKey(item);
+    row.classList.add("gantt-row");
+
+    const label = document.createElement("div");
+    label.classList.add("gantt-label");
+    label.textContent = item.Project + " - " + item.Squad;
+
+    const barContainer = document.createElement("div");
+    barContainer.classList.add("gantt-bar-container");
+    barContainer.classList.add("lane-phase-" + item.LanePhase);
+
+    const bar = document.createElement("div");
+    bar.classList.add("gantt-bar");
+    bar.classList.add("phase-" + item.Phase);
+
+    // Calculate position and width of the bar
+    const startOffset = ((item.StartWeek - minWeek) / totalWeeks) * 100;
+    const duration = ((item.EndWeek - item.StartWeek + 1) / totalWeeks) * 100;
+
+    // Update style with calculated values
+    bar.style.left = startOffset + "%";
+    bar.style.width = duration + "%";
+    bar.textContent = getItemKey(item);
+
+    // Create Nested Structure
+    barContainer.appendChild(bar); // bar in barContainer
+    row.appendChild(label); // label in row
+    row.appendChild(barContainer); // barContainer in row
+    ganttChart.appendChild(row); // row in ganttChart
+  });
+}
+
+// RENDER CHART ELEMENTS
+function getMinWeek(dataGanttChart) {
+  let minWeek = dataGanttChart[0].StartWeek;
+  for (let i = 1; i < dataGanttChart.length; i++) {
+    if (dataGanttChart[i].StartWeek < minWeek) {
+      minWeek = dataGanttChart[i].StartWeek;
     }
   }
   return minWeek;
 }
-function getMaxWeek(data) {
-  let maxWeek = data[0].EndWeek;
-  for (let i = 1; i < data.length; i++) {
-    if (data[i].EndWeek > maxWeek) {
-      maxWeek = data[i].EndWeek;
+function getMaxWeek(dataGanttChart) {
+  let maxWeek = dataGanttChart[0].EndWeek;
+  for (let i = 1; i < dataGanttChart.length; i++) {
+    if (dataGanttChart[i].EndWeek > maxWeek) {
+      maxWeek = dataGanttChart[i].EndWeek;
     }
   }
   return maxWeek;
@@ -90,9 +142,9 @@ function logTimeScale(minWeek, maxWeek, totalWeeks) {
       " weeks."
   );
 }
-function createTimeScale(data) {
-  const maxWeek = getMaxWeek(data);
-  const minWeek = getMinWeek(data);
+function createTimeScale(dataGantt) {
+  const maxWeek = getMaxWeek(dataGantt);
+  const minWeek = getMinWeek(dataGantt);
   const totalWeeks = maxWeek - minWeek + 1;
   logTimeScale(minWeek, maxWeek, totalWeeks);
   return { minWeek, maxWeek, totalWeeks };
@@ -125,53 +177,6 @@ function createLegend(minWeek, maxWeek, totalWeeks) {
     weekElement.style.flex = `1 1 ${100 / totalWeeks}%`;
     legendbarContainer.appendChild(weekElement);
   }
-}
-function filterSourceData(sourcedata) {
-  data = sourcedata;
-  return data;
-}
-function renderGanttChart() {
-  data = filterData();
-  const ganttChart = document.getElementById("ganttChart");
-  ganttChart.innerHTML = ""; // Clear previous content
-  // Create timescale
-  const { minWeek, maxWeek, totalWeeks } = createTimeScale(data);
-  // Call createLegend function
-  createLegend(minWeek, maxWeek, totalWeeks);
-
-  // Iterate over each item in the data to create rows
-  data.forEach((item) => {
-    const row = document.createElement("div");
-    row.id = getItemKey(item);
-    row.classList.add("gantt-row");
-
-    const label = document.createElement("div");
-    label.classList.add("gantt-label");
-    label.textContent = item.Project + " - " + item.Squad;
-
-    const barContainer = document.createElement("div");
-    barContainer.classList.add("gantt-bar-container");
-    barContainer.classList.add("lane-phase-" + item.LanePhase);
-
-    const bar = document.createElement("div");
-    bar.classList.add("gantt-bar");
-    bar.classList.add("phase-" + item.Phase);
-
-    // Calculate position and width of the bar
-    const startOffset = ((item.StartWeek - minWeek) / totalWeeks) * 100;
-    const duration = ((item.EndWeek - item.StartWeek + 1) / totalWeeks) * 100;
-
-    // Update style with calculated values
-    bar.style.left = startOffset + "%";
-    bar.style.width = duration + "%";
-    bar.textContent = getItemKey(item);
-
-    // Create Nested Structure
-    barContainer.appendChild(bar); // bar in barContainer
-    row.appendChild(label); // label in row
-    row.appendChild(barContainer); // barContainer in row
-    ganttChart.appendChild(row); // row in ganttChart
-  });
 }
 function renderPhaseLegend() {
   const phaseLegendContainer = document.getElementById("phaseLegend");
@@ -217,16 +222,10 @@ function renderLaneStatusLegend() {
   });
 }
 
+//ON-LOAD REFRESH
 document.addEventListener("DOMContentLoaded", () => {
-  filterData();
+  setGanttDefaults();
+  populateGanttDropdowns(dataGantt);
+  setGanttLatestDropdownSelect();
   renderGanttChart();
-  populateGanttDropdowns();
-  setGanttdropdowns();
-
-  renderPhaseLegend();
-  renderLaneStatusLegend();
-
-  // Log
-  console.log(data);
-  console.log(phaseLegend);
 });

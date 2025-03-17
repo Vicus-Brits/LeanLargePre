@@ -1,4 +1,4 @@
-const sourcedata = [
+const dataGantt = [
   {
     seqid: 1,
     Project: "Project 1",

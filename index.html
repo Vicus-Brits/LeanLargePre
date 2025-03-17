@@ -11,11 +11,11 @@
     <div class="gantt-container">
       <div class="gantt-dropdown">
         <label for="squadSelect">Squad:</label>
-        <select id="squadSelect" onchange="dropdownchange(this.id, this.value)"></select>
+        <select id="squadSelect" onchange="changeGanttDropdowns(this.id, this.value)"></select>
         </select>
 
         <label for="projectSelect">Project:</label>
-        <select id="projectSelect"  onchange="dropdownchange(this.id, this.value)">
+        <select id="projectSelect"  onchange="changeGanttDropdowns(this.id, this.value)">
         </select>
       </div>
     </div>
@@ -33,11 +33,12 @@
     <section id="TODO">
       <h4>TODO</h4>
       <ul>
-        <li>Dropdown Squad</li>
-        <li>Dropdown Project</li>
+        <li>Phase Filter</li>
+        <li>Sort Order</li>
       </ul>
     </section>
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+    <script src="dataGet.js"></script>
+    <script src="dataManagement.js"></script>
+    <script src="chartGantt.js"></script>
   </body>
 </html>
